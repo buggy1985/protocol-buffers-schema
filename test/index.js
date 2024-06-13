@@ -155,3 +155,8 @@ tape('escaped quotes in option value parse', function (t) {
   t.same(schema.parse(fixture('escaped-quotes.proto')), require('./fixtures/escaped-quotes.json'))
   t.end()
 })
+
+tape('google protobuf any', function (t) {
+  t.same(schema.parse(fixture('import-any.proto')), require('./fixtures/import-any.json'))
+  t.end()
+})

@@ -1,0 +1,32 @@
+{
+  "syntax": 3,
+  "package": null,
+  "imports": [
+    "google/protobuf/any.proto"
+  ],
+  "enums": [],
+  "messages": [
+    {
+      "name": "Test",
+      "options": {},
+      "enums": [],
+      "extends": [],
+      "messages": [],
+      "fields": [
+        {
+          "name": "test",
+          "type": "google.protobuf.Any",
+          "tag": 3,
+          "map": null,
+          "oneof": null,
+          "required": false,
+          "repeated": false,
+          "options": []
+        }
+      ],
+      "extensions": null
+    }
+  ],
+  "options": {},
+  "extends": []
+}
