@@ -297,7 +297,7 @@ var onpackagename = function (tokens) {
 var onsyntaxversion = function (tokens) {
   tokens.shift()
 
-  if (tokens[0] !== '=') throw new Error('Expected = but found ' + tokens[0])
+  if (tokens[0] !== '=') throw new Error('Expected = but found ' + tokens[0] + getContext(tokens))
   tokens.shift()
 
   var version = tokens.shift()
@@ -314,7 +314,7 @@ var onsyntaxversion = function (tokens) {
       throw new Error('Expected protobuf syntax version but found ' + version)
   }
 
-  if (tokens[0] !== ';') throw new Error('Expected ; but found ' + tokens[0])
+  if (tokens[0] !== ';') throw new Error('Expected ; but found ' + tokens[0] + getContext(tokens))
   tokens.shift()
 
   return version
@@ -330,8 +330,8 @@ var onenumvalue = function (tokens) {
     tokens.shift()
     return null
   }
-  if (tokens[1] !== '=') throw new Error('Expected = but found ' + tokens[1])
-  if (tokens[3] !== ';' && tokens[3] !== '[') throw new Error('Expected ; or [ but found ' + tokens[1])
+  if (tokens[1] !== '=') throw new Error('Expected = but found ' + tokens[1] + getContext(tokens))
+  if (tokens[3] !== ';' && tokens[3] !== '[') throw new Error('Expected ; or [ but found ' + tokens[1] + getContext(tokens))
 
   var name = tokens.shift()
   tokens.shift()
@@ -360,7 +360,7 @@ var onenum = function (tokens) {
     options: {}
   }
 
-  if (tokens[0] !== '{') throw new Error('Expected { but found ' + tokens[0])
+  if (tokens[0] !== '{') throw new Error('Expected { but found ' + tokens[0] + getContext(tokens))
   tokens.shift()
 
   while (tokens.length) {
@@ -409,7 +409,7 @@ var onoption = function (tokens) {
         name = tokens.shift()
 
         if (hasBracket) {
-          if (tokens[0] !== ')') throw new Error('Expected ) but found ' + tokens[0])
+          if (tokens[0] !== ')') throw new Error('Expected ) but found ' + tokens[0] + getContext(tokens))
           tokens.shift()
         }
 
@@ -421,7 +421,7 @@ var onoption = function (tokens) {
 
       case '=':
         tokens.shift()
-        if (name === null) throw new Error('Expected key for option with value: ' + tokens[0])
+        if (name === null) throw new Error('Expected key for option with value: ' + tokens[0] + getContext(tokens))
         value = parse(tokens.shift())
 
         if (name === 'optimize_for' && !/^(SPEED|CODE_SIZE|LITE_RUNTIME)$/.test(value)) {
@@ -433,7 +433,7 @@ var onoption = function (tokens) {
         break
 
       default:
-        throw new Error('Unexpected token in option: ' + tokens[0])
+        throw new Error('Unexpected token in option: ' + tokens[0] + getContext(tokens))
     }
   }
 }
@@ -458,7 +458,7 @@ var onoptionMap = function (tokens) {
 
     var key = tokens.shift()
     if (hasBracket) {
-      if (tokens[0] !== ')') throw new Error('Expected ) but found ' + tokens[0])
+      if (tokens[0] !== ')') throw new Error('Expected ) but found ' + tokens[0] + getContext(tokens))
       tokens.shift()
     }
 
@@ -495,7 +495,7 @@ var onoptionMap = function (tokens) {
         break
 
       default:
-        throw new Error('Unexpected token in option map: ' + tokens[0])
+        throw new Error('Unexpected token in option map: ' + tokens[0] + getContext(tokens))
     }
   }
 
@@ -506,7 +506,7 @@ var onimport = function (tokens) {
   tokens.shift()
   var file = tokens.shift().replace(/^"+|"+$/gm, '')
 
-  if (tokens[0] !== ';') throw new Error('Unexpected token: ' + tokens[0] + '. Expected ";"')
+  if (tokens[0] !== ';') throw new Error('Unexpected token: ' + tokens[0] + '. Expected ";"' + getContext(tokens))
 
   tokens.shift()
   return file
@@ -521,7 +521,7 @@ var onservice = function (tokens) {
     options: {}
   }
 
-  if (tokens[0] !== '{') throw new Error('Expected { but found ' + tokens[0])
+  if (tokens[0] !== '{') throw new Error('Expected { but found ' + tokens[0] + getContext(tokens))
   tokens.shift()
 
   while (tokens.length) {
@@ -542,7 +542,7 @@ var onservice = function (tokens) {
         service.methods.push(onrpc(tokens))
         break
       default:
-        throw new Error('Unexpected token in service: ' + tokens[0])
+        throw new Error('Unexpected token in service: ' + tokens[0] + getContext(tokens))
     }
   }
 
@@ -561,7 +561,7 @@ var onrpc = function (tokens) {
     options: {}
   }
 
-  if (tokens[0] !== '(') throw new Error('Expected ( but found ' + tokens[0])
+  if (tokens[0] !== '(') throw new Error('Expected ( but found ' + tokens[0] + getContext(tokens))
   tokens.shift()
 
   if (tokens[0] === 'stream') {
@@ -571,13 +571,13 @@ var onrpc = function (tokens) {
 
   rpc.input_type = tokens.shift()
 
-  if (tokens[0] !== ')') throw new Error('Expected ) but found ' + tokens[0])
+  if (tokens[0] !== ')') throw new Error('Expected ) but found ' + tokens[0] + getContext(tokens))
   tokens.shift()
 
-  if (tokens[0] !== 'returns') throw new Error('Expected returns but found ' + tokens[0])
+  if (tokens[0] !== 'returns') throw new Error('Expected returns but found ' + tokens[0] + getContext(tokens))
   tokens.shift()
 
-  if (tokens[0] !== '(') throw new Error('Expected ( but found ' + tokens[0])
+  if (tokens[0] !== '(') throw new Error('Expected ( but found ' + tokens[0] + getContext(tokens))
   tokens.shift()
 
   if (tokens[0] === 'stream') {
@@ -587,7 +587,7 @@ var onrpc = function (tokens) {
 
   rpc.output_type = tokens.shift()
 
-  if (tokens[0] !== ')') throw new Error('Expected ) but found ' + tokens[0])
+  if (tokens[0] !== ')') throw new Error('Expected ) but found ' + tokens[0] + getContext(tokens))
   tokens.shift()
 
   if (tokens[0] === ';') {
@@ -595,7 +595,7 @@ var onrpc = function (tokens) {
     return rpc
   }
 
-  if (tokens[0] !== '{') throw new Error('Expected { but found ' + tokens[0])
+  if (tokens[0] !== '{') throw new Error('Expected { but found ' + tokens[0] + getContext(tokens))
   tokens.shift()
 
   while (tokens.length) {
@@ -611,7 +611,7 @@ var onrpc = function (tokens) {
       if (rpc.options[opt.name] !== undefined) throw new Error('Duplicate option ' + opt.name)
       rpc.options[opt.name] = opt.value
     } else {
-      throw new Error('Unexpected token in rpc options: ' + tokens[0])
+      throw new Error('Unexpected token in rpc options: ' + tokens[0] + getContext(tokens))
     }
   }
 
@@ -690,7 +690,7 @@ var parse = function (buf) {
         break
 
       default:
-        throw new Error('Unexpected token: ' + tokens[0])
+        throw new Error('Unexpected token: ' + tokens[0] + getContext(tokens))
     }
     firstline = false
   }
@@ -766,4 +766,7 @@ var parse = function (buf) {
   return schema
 }
 
+var getContext = function (tokens) {
+  return '\n - in: ' + tokens.splice(0, 4).join(' ')
+}
 module.exports = parse
