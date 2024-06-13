@@ -142,7 +142,7 @@ var onfield = function (tokens) {
         return field
 
       default:
-        throw new Error('Unexpected token in message field: ' + tokens[0])
+        throw new Error('Unexpected token in message field: ' + tokens[0] + getContext(tokens))
     }
   }
 
@@ -236,15 +236,28 @@ var onextend = function (tokens) {
 }
 
 var onextensions = function (tokens) {
-  tokens.shift()
-  var from = Number(tokens.shift())
+  tokens.shift() // extensions
+  var from = Number(tokens.shift()) // from value
   if (isNaN(from)) throw new Error('Invalid from in extensions definition')
-  if (tokens.shift() !== 'to') throw new Error("Expected keyword 'to' in extensions definition")
-  var to = tokens.shift()
-  if (to === 'max') to = MAX_RANGE
-  to = Number(to)
-  if (isNaN(to)) throw new Error('Invalid to in extensions definition')
-  if (tokens.shift() !== ';') throw new Error('Missing ; in extensions definition')
+
+  var token = tokens.shift()
+
+  if (token === 'to') { // to keyword (optional)
+    var to = tokens.shift() // to value
+    if (to === 'max') to = MAX_RANGE
+    to = Number(to)
+    if (isNaN(to)) throw new Error('Invalid to in extensions definition')
+    token = tokens.shift()
+  }
+
+  if (token === '[') {
+    while (token !== ']') { // skip extension definition
+      token = tokens.shift()
+    }
+    token = tokens.shift()
+  }
+
+  if (token !== ';') throw new Error('Missing ; in extensions definition')
   return { from: from, to: to }
 }
 var onmessage = function (tokens) {
